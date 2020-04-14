@@ -6,14 +6,20 @@ const covid19ImpactEstimator = (data) => {
     currentlyInfected: 0,
     infectionsByRequestedTime: 0,
     severeCasesByRequestedTime: 0,
-    hospitalBedsByRequestedTime: 0
+    hospitalBedsByRequestedTime: 0,
+    casesForICUByRequestedTime: 0,
+    casesForVentilatorsByRequestedTime: 0,
+    dollarsInFlight: 0
   };
 
   const severeImpact = {
     currentlyInfected: 0,
     infectionsByRequestedTime: 0,
     severeCasesByRequestedTime: 0,
-    hospitalBedsByRequestedTime: 0
+    hospitalBedsByRequestedTime: 0,
+    casesForICUByRequestedTime: 0,
+    casesForVentilatorsByRequestedTime: 0,
+    dollarsInFlight: 0
   };
 
   /* function to calculate the possible number of infected cases given reported cases and time */
@@ -35,9 +41,6 @@ const covid19ImpactEstimator = (data) => {
   /* function to calculate the infections cases given time */
   const calculatePercent = (percentage, number) => Math.trunc((percentage / 100) * number);
 
-  /* function to calculate the remaining hospital beds after a given time */
-  const remainingBeds = (beds, perctAvail, cases) => calculatePercent(perctAvail, beds) - cases;
-
   impact.currentlyInfected = input.reportedCases * 10;
   severeImpact.currentlyInfected = input.reportedCases * 50;
 
@@ -47,8 +50,8 @@ const covid19ImpactEstimator = (data) => {
   impact.severeCasesByRequestedTime = calculatePercent(15, impact.infectionsByRequestedTime);
   severeImpact.severeCasesByRequestedTime = calculatePercent(15, severeImpact.infectionsByRequestedTime);
 
-  impact.hospitalBedsByRequestedTime = remainingBeds(input.totalHospitalBeds, 35, impact.severeCasesByRequestedTime);
-  severeImpact.hospitalBedsByRequestedTime = remainingBeds(input.totalHospitalBeds, 35, severeImpact.severeCasesByRequestedTime);
+  impact.hospitalBedsByRequestedTime = Math.trunc((input.totalHospitalBeds * 0.35) - impact.severeCasesByRequestedTime);
+  severeImpact.hospitalBedsByRequestedTime = Math.trunc((input.totalHospitalBeds * 0.35) - severeImpact.severeCasesByRequestedTime);
 
   impact.casesForICUByRequestedTime = calculatePercent(5, impact.infectionsByRequestedTime);
   severeImpact.casesForICUByRequestedTime = calculatePercent(5, severeImpact.infectionsByRequestedTime);
@@ -56,11 +59,14 @@ const covid19ImpactEstimator = (data) => {
   impact.casesForVentilatorsByRequestedTime = calculatePercent(2, impact.infectionsByRequestedTime);
   severeImpact.casesForVentilatorsByRequestedTime = calculatePercent(2, severeImpact.infectionsByRequestedTime);
 
-  return {
+  impact.dollarsInFlight = Math.trunc((impact.infectionsByRequestedTime * input.region.avgDailyIncomePopulation * input.region.avgDailyIncomeInUSD) / input.timeToElapse);
+  severeImpact.dollarsInFlight = Math.trunc((severeImpact.infectionsByRequestedTime * input.region.avgDailyIncomePopulation * input.region.avgDailyIncomeInUSD) / input.timeToElapse);
+
+  return Object.freeze({
     data: input,
     impact,
     severeImpact
-  };
+  });
 };
 
 export default covid19ImpactEstimator;

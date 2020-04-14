@@ -38,3 +38,27 @@ test('function calculates and returns the number of avalible hospital beds(impac
 test('function calculates and returns the number of avalible hospital beds(severe impact) when called', () => {
   expect(Expecteddata.severeImpact.hospitalBedsByRequestedTime).toBe(-2649792625);
 });
+
+test('function returns number of cases for ICU by requested time(impact) when called', () => {
+  expect(Expecteddata.impact.casesForICUByRequestedTime).toBe(176685056);
+});
+
+test('function returns number of cases for ICU by requested time(severe impact) when called', () => {
+  expect(Expecteddata.severeImpact.casesForICUByRequestedTime).toBe(883425280);
+});
+
+test('function returns number of cases for Ventilators by requested time(impact) when called', () => {
+  expect(Expecteddata.impact.casesForVentilatorsByRequestedTime).toBe(70674022);
+});
+
+test('function returns number of cases for Ventilators by requested time(severe impact) when called', () => {
+  expect(Expecteddata.severeImpact.casesForVentilatorsByRequestedTime).toBe(353370112);
+});
+
+test('function calculates the amount of dollars lost in the economy(impact) when called', () => {
+  expect(Expecteddata.impact.dollarsInFlight).toBe(216286878);
+});
+
+test('function calculates the amount of dollars lost in the economy(severe impact) when called', () => {
+  expect(Expecteddata.severeImpact.dollarsInFlight).toBe(1081434394);
+});
